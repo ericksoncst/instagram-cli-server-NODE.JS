@@ -135,25 +135,28 @@ app.get('/api/:id', function(req, res){
 
 //PUT BY ID (update)
 app.put('/api/:id', function(req, res){
+	res.send('rota teste')
 
-	db.open( function(err, mongoclient){
-		mongoclient.collection('postagens', function(err, collection){
-			collection.update(
-				{ _id: objectId(req.params.id) },
-				{ $set : { titulo : req.body.titulo}},
-				{},
-				function(err, records){
-					if(err){
-						res.json(err);
-					} else {
-						res.json(records);
-					}
-				}
-			);
+	// db.open( function(err, mongoclient){
+	// 	mongoclient.collection('postagens', function(err, collection){
+	// 		collection.update(
+	// 			{ _id: objectId(req.params.id) },
+	// 			{ $set : { titulo : req.body.titulo}},
+	// 			{},
+	// 			function(err, records){
+	// 				if(err){
+	// 					res.json(err);
+	// 				} else {
+	// 					res.json(records);
+	// 				}
+
+	// 				mongoclient.close();
+	// 			}
+	// 		);
 			
-		});
+	// 	});
 		
-	});
+	// });
 });
 
 //DELETE by ID

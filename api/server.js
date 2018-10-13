@@ -77,6 +77,8 @@ app.post('/api', function(req, res){
 //GET (ready)
 app.get('/api', function(req, res){
 
+	res.setHeader('Access-Control-Allow-Origin', '*');
+
 	db.open( function(err, mongoclient){
 		mongoclient.collection('postagens', function(err, collection){
 			collection.find().toArray( function(err, result){
@@ -93,6 +95,23 @@ app.get('/api', function(req, res){
 		
 	});
 });
+
+//alternativa para exibir imagem. tem o static do express também
+app.get('/imagens/:imagem', function(req, res){
+    var img = req.params.imagem;
+
+    fs.readFile('./uploads/' + img, function(err, content){
+        if(err){
+            res.status(400).json({ err });
+            return;
+        }
+
+        res.writeHead(200, { 'content-type' : 'image/jpg' });
+        res.end(content);
+
+    });
+});
+
 
 //GET BY ID (ready)
 app.get('/api/:id', function(req, res){
@@ -144,9 +163,9 @@ app.delete('/api/:id', function(req, res){
 		mongoclient.collection('postagens', function(err, collection){
 			collection.remove({ _id : objectId(req.params.id) }, function(err, records){
 				if(err){
-					res.status(400).json(err);
+					res.json(err);
 				} else {
-					res.status(200).json(records);
+					res.json(records);
 				}
 
 				mongoclient.close();

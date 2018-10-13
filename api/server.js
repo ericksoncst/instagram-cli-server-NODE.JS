@@ -1,6 +1,7 @@
 var express = require('express'),
     bodyParser = require('body-parser'),
-    mongodb = require('mongodb');
+	mongodb = require('mongodb');
+	objectId = require('mongodb').ObjectId;
 
 var app = express();
 
@@ -47,7 +48,6 @@ app.post('/api', function(req, res){
 
 //GET (ready)
 app.get('/api', function(req, res){
-	var dados = req.body;
 
 	db.open( function(err, mongoclient){
 		mongoclient.collection('postagens', function(err, collection){
@@ -56,6 +56,69 @@ app.get('/api', function(req, res){
 					res.json(err);
 				} else {
 					res.json(result);
+				}
+
+				mongoclient.close();
+			});
+			
+		});
+		
+	});
+});
+
+//GET BY ID (ready)
+app.get('/api/:id', function(req, res){
+
+	db.open( function(err, mongoclient){
+		mongoclient.collection('postagens', function(err, collection){
+			collection.find(objectId(req.params.id)).toArray( function(err, result){
+				if (err) {
+					res.json(err);
+				} else {
+					res.json(result);
+				}
+
+				mongoclient.close();
+			});
+			
+		});
+		
+	});
+});
+
+//PUT BY ID (update)
+app.put('/api/:id', function(req, res){
+
+	db.open( function(err, mongoclient){
+		mongoclient.collection('postagens', function(err, collection){
+			collection.update(
+				{ _id: objectId(req.params.id) },
+				{ $set : { titulo : req.body.titulo}},
+				{},
+				function(err, records){
+					if(err){
+						res.json(err);
+					} else {
+						res.json(records);
+					}
+				}
+			);
+			
+		});
+		
+	});
+});
+
+//DELETE by ID
+app.delete('/api/:id', function(req, res){
+
+	db.open( function(err, mongoclient){
+		mongoclient.collection('postagens', function(err, collection){
+			collection.remove({ _id : objectId(req.params.id) }, function(err, records){
+				if(err){
+					res.json(err);
+				} else {
+					res.json(records);
 				}
 
 				mongoclient.close();

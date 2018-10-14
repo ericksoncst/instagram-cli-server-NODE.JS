@@ -48,7 +48,13 @@
 								//console.log(comentario);
 								var xhr = new XMLHttpRequest();
 								xhr.open('PUT', 'http://localhost:8080/api/'+id);
-								xhr.send();
+								xhr.setRequestHeader('content-type', 'application/json');
+								
+								xhr.onload = function(){
+									alert(xhr.responseText);
+								}
+
+								xhr.send(JSON.stringify({ comentario : comentario}));
 							});
 						}
 					}
